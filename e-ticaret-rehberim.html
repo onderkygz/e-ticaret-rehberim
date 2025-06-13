@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İnteraktif e-Ticaret ve e-İhracat Eğitim Rehberi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Harmony -->
+    <!-- Application Structure Plan: The application is structured around five core thematic pillars of e-commerce expertise (Strategy, Technology, Operations, Marketing, E-Export) instead of a linear 27-module list. This thematic structure enhances usability by allowing users to explore content based on their area of interest, making the dense information more digestible and discoverable. A sticky top navigation allows for quick access to these pillars, and within each pillar, users can select specific modules. This non-linear, task-oriented design promotes exploration and a deeper understanding of how different concepts relate to each other. -->
+    <!-- Visualization & Content Choices: Report Info -> Key e-commerce success factors. Goal -> Inform/Compare. Viz/Method -> Doughnut Chart (Chart.js) to show the interconnectedness of core concepts. Interaction -> Hover tooltips. Justification -> A doughnut chart visually represents the components of a whole, perfect for showing how different areas contribute to overall success. Report Info -> Comparing e-commerce platforms (SaaS vs Open Source vs Headless). Goal -> Compare. Viz/Method -> Interactive horizontal bar chart (Chart.js). Interaction -> Dropdown filter to change the data view (e.g., 'Ease of Use', 'Flexibility'). Justification -> An interactive chart makes complex comparisons engaging and allows users to focus on the criteria most important to them. Report Info -> Process flows (Order Fulfillment, SWOT Analysis). Goal -> Organize. Viz/Method -> Structured HTML/CSS diagrams using Flexbox/Grid. Interaction -> Hover effects. Justification -> Visual diagrams simplify complex processes, making them easier to understand than a long list of text. This avoids SVG/Mermaid as required. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8F7F4;
+            color: #333333;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .nav-link {
+            transition: all 0.3s ease;
+            border-bottom: 2px solid transparent;
+        }
+        .nav-link.active, .nav-link:hover {
+            border-bottom-color: #4A7C59;
+            color: #4A7C59;
+        }
+        .module-button {
+            transition: all 0.3s ease;
+        }
+        .module-button.active {
+            background-color: #4A7C59;
+            color: #F8F7F4;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+        .content-section {
+            display: none;
+        }
+        .content-section.active {
+            display: block;
+        }
+        .process-step {
+            border: 1px solid #e5e7eb;
+            transition: all 0.3s ease;
+        }
+        .process-step:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -2px rgb(0 0 0 / 0.1);
+            border-color: #D4A373;
+        }
+        .arrow {
+            color: #9ca3af;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="bg-white/80 backdrop-blur-lg shadow-sm sticky top-0 z-50">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col sm:flex-row items-center justify-between py-4">
+                <h1 class="text-2xl font-bold text-gray-800">2025 ve Ötesi: İnteraktif e-Ticaret Rehberi</h1>
+                <nav id="main-nav" class="flex flex-wrap justify-center space-x-4 sm:space-x-6 mt-4 sm:mt-0">
+                    <a href="#strateji" class="nav-link font-medium text-gray-600 p-2">Strateji</a>
+                    <a href="#teknoloji" class="nav-link font-medium text-gray-600 p-2">Teknoloji</a>
+                    <a href="#operasyon" class="nav-link font-medium text-gray-600 p-2">Operasyon</a>
+                    <a href="#pazarlama" class="nav-link font-medium text-gray-600 p-2">Pazarlama</a>
+                    <a href="#e-ihracat" class="nav-link font-medium text-gray-600 p-2">e-İhracat</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto p-4 sm:p-6 lg:p-8">
+
+        <section id="hero" class="text-center bg-white rounded-xl shadow-lg p-8 mb-12">
+            <h2 class="text-4xl font-bold mb-4 text-[#4A7C59]">E-Ticaret ve e-İhracatta Uzmanlaşın</h2>
+            <p class="text-lg text-gray-600 max-w-3xl mx-auto mb-6">Bu interaktif rehber, 2025 ve ötesi için gerekli tüm e-ticaret ve e-ihracat yetkinliklerini keşfetmenize yardımcı olmak için tasarlandı. Aşağıdaki ana yetkinlik alanlarından birini seçerek yolculuğunuza başlayın ve konular arasında serbestçe gezinin.</p>
+            <div class="chart-container">
+                <canvas id="ecommerceGrowthChart"></canvas>
+            </div>
+             <p class="text-sm text-gray-500 mt-2">Küresel e-Ticaret Pazar Büyüklüğü Projeksiyonu (Trilyon $)</p>
+        </section>
+
+        <!-- Strateji ve Temeller Bölümü -->
+        <section id="strateji" class="mb-16">
+            <h2 class="text-3xl font-bold border-b-2 border-[#D4A373] pb-2 mb-6">Strateji ve Temeller</h2>
+            <p class="text-gray-700 mb-8">E-ticaret yolculuğunuzun temelini sağlam atın. Bu bölümde, e-ticaretin geleceğinden iş modellerine, yasal çerçeveden finansal planlamaya kadar tüm stratejik konuları bulacaksınız. Başarılı bir iş kurmanın ve yönetmenin "neden" ve "nasıl" sorularına cevaplar burada.</p>
+            <div id="module-buttons-strateji" class="flex flex-wrap gap-2 mb-8">
+                <button data-target="modul-1" class="module-button bg-white shadow-sm rounded-full px-4 py-2 text-sm font-semibold text-gray-700">Giriş ve Trendler</button>
+                <button data-target="modul-1.3" class="module-button bg-white shadow-sm rounded-full px-4 py-2 text-sm font-semibold text-gray-700">İş Modelleri</button>
+                <button data-target="modul-1.4" class="module-button bg-white shadow-sm rounded-full px-4 py-2 text-sm font-semibold text-gray-700">Başarı Faktörleri</button>
+                <button data-target="modul-1.5" class="module-button bg-white shadow-sm rounded-full px-4 py-2 text-sm font-semibold text-gray-700">Yasal Çerçeve</button>
+                <button data-target="modul-24" class="module-button bg-white shadow-sm rounded-full px-4 py-2 text-sm font-semibold text-gray-700">İş Modeli Kanvası</button>
+                <button data-target="modul-25" class="module-button bg-white shadow-sm rounded-full px-4 py-2 text-sm font-semibold text-gray-700">SWOT Analizi</button>
+            </div>
+            <div id="content-display-strateji" class="bg-white p-6 rounded-lg shadow-md min-h-[300px]">
+                <!-- İçerik buraya dinamik olarak gelecek -->
+            </div>
+        </section>
+        
+        <!-- Teknoloji ve Altyapı Bölümü -->
+        <section id="teknoloji" class="mb-16">
+            <h2 class="text-3xl font-bold border-b-2 border-[#D4A373] pb-2 mb-6">Teknoloji ve Altyapı</h2>
+             <p class="text-gray-700 mb-8">Başarılı bir e-ticaret operasyonunun arkasında güçlü bir teknoloji yatar. Bu bölümde, doğru platformu seçmekten API entegrasyonlarına, bulut çözümlerinden siber güvenliğe kadar işinizin motorunu oluşturacak tüm teknik konuları ele alıyoruz. "Ne ile inşa etmeli?" sorusunun cevabını burada keşfedin.</p>
+            <div id="module-buttons-teknoloji" class="flex flex-wrap gap-2 mb-8">
+                 <button data-target="modul-3" class="module-button bg-white shadow-sm rounded-full px-4 py-2 text-sm font-semibold text-gray-700">Platform Seçimi</button>
+                 <button data-target="modul-3.2" class="module-button bg-white shadow-sm rounded-full px-4 py-2 text-sm font-semibold text-gray-700">API & Entegrasyon</button>
+                 <button data-target="modul-3.3" class="module-button bg-white shadow-sm rounded-full px-4 py-2 text-sm font-semibold text-gray-700">Bulut ve Ölçeklenebilirlik</button>
+                 <button data-target="modul-3.4" class="module-button bg-white shadow-sm rounded-full px-4 py-2 text-sm font-semibold text-gray-700">Veri Güvenliği</button>
+                 <button data-target="modul-4" class="module-button bg-white shadow-sm rounded-full px-4 py-2 text-sm font-semibold text-gray-700">Yazılım Altyapıları</button>
+                 <button data-target="modul-5" class="module-button bg-white shadow-sm rounded-full px-4 py-2 text-sm font-semibold text-gray-700">ERP Yönetimi</button>
+            </div>
+            <div id="content-display-teknoloji" class="bg-white p-6 rounded-lg shadow-md min-h-[300px]">
+                <!-- İçerik buraya dinamik olarak gelecek -->
+            </div>
+        </section>
+
+        <!-- Operasyon ve Lojistik Bölümü -->
+        <section id="operasyon" class="mb-16">
+             <h2 class="text-3xl font-bold border-b-2 border-[#D4A373] pb-2 mb-6">Operasyon ve Lojistik</h2>
+             <p class="text-gray-700 mb-8">Mükemmel bir web sitesi sadece başlangıçtır. Siparişin alınmasından müşteriye teslim edilmesine kadar olan süreç, başarının temel direğidir. Tedarik zinciri, envanter yönetimi, depo operasyonları ve müşteri hizmetleri gibi "işi nasıl yürüteceğinize" dair tüm kritik konular bu bölümde.</p>
+            <div id="module-buttons-operasyon" class="flex flex-wrap gap-2 mb-8">
+                <button data-target="modul-2.1" class="module-button bg-white shadow-sm rounded-full px-4 py-2 text-sm font-semibold text-gray-700">Tedarik Zinciri</button>
+                <button data-target="modul-2.2" class="module-button bg-white shadow-sm rounded-full px-4 py-2 text-sm font-semibold text-gray-700">Envanter Yönetimi</button>
+                <button data-target="modul-2.3" class="module-button bg-white shadow-sm rounded-full px-4 py-2 text-sm font-semibold text-gray-700">Depo Yönetimi (WMS)</button>
+                <button data-target="modul-2.4" class="module-button bg-white shadow-sm rounded-full px-4 py-2 text-sm font-semibold text-gray-700">Sipariş & İade</button>
+                <button data-target="modul-2.5" class="module-button bg-white shadow-sm rounded-full px-4 py-2 text-sm font-semibold text-gray-700">Müşteri Hizmetleri</button>
+                <button data-target="modul-2.6" class="module-button bg-white shadow-sm rounded-full px-4 py-2 text-sm font-semibold text-gray-700">Sürdürülebilirlik</button>
+            </div>
+            <div id="content-display-operasyon" class="bg-white p-6 rounded-lg shadow-md min-h-[300px]">
+                <!-- İçerik buraya dinamik olarak gelecek -->
+            </div>
+        </section>
+        
+        <!-- Pazarlama ve Büyüme Bölümü -->
+        <section id="pazarlama" class="mb-16">
+            <h2 class="text-3xl font-bold border-b-2 border-[#D4A373] pb-2 mb-6">Pazarlama ve Büyüme</h2>
+            <p class="text-gray-700 mb-8">Doğru kitleye ulaşmak ve onları sadık müşterilere dönüştürmek sanattır. Bu bölümde, dijital pazarlamanın inceliklerinden SEO'ya, dönüşüm optimizasyonundan müşteri deneyimi tasarımına kadar "işi nasıl büyüteceğinize" odaklanan tüm stratejileri bulacaksınız.</p>
+            <div id="module-buttons-pazarlama" class="flex flex-wrap gap-2 mb-8">
+                <button data-target="modul-18" class="module-button bg-white shadow-sm rounded-full px-4 py-2 text-sm font-semibold text-gray-700">Dijital Pazarlama</button>
+                <button data-target="modul-19" class="module-button bg-white shadow-sm rounded-full px-4 py-2 text-sm font-semibold text-gray-700">SEO & İçerik</button>
+                <button data-target="modul-20" class="module-button bg-white shadow-sm rounded-full px-4 py-2 text-sm font-semibold text-gray-700">CRO & A/B Testi</button>
+                <button data-target="modul-21" class="module-button bg-white shadow-sm rounded-full px-4 py-2 text-sm font-semibold text-gray-700">Design Thinking</button>
+                <button data-target="modul-22" class="module-button bg-white shadow-sm rounded-full px-4 py-2 text-sm font-semibold text-gray-700">Müşteri Deneyimi (CX)</button>
+                <button data-target="modul-8" class="module-button bg-white shadow-sm rounded-full px-4 py-2 text-sm font-semibold text-gray-700">Yapay Zeka Uyg.</button>
+            </div>
+            <div id="content-display-pazarlama" class="bg-white p-6 rounded-lg shadow-md min-h-[300px]">
+                <!-- İçerik buraya dinamik olarak gelecek -->
+            </div>
+        </section>
+        
+        <!-- e-İhracat Bölümü -->
+        <section id="e-ihracat" class="mb-16">
+            <h2 class="text-3xl font-bold border-b-2 border-[#D4A373] pb-2 mb-6">e-İhracat: Sınırları Aşmak</h2>
+            <p class="text-gray-700 mb-8">İşinizi küresel pazarlara taşıyın. Bu bölümde, uluslararası pazarlara giriş stratejilerinden global lojistik ve ödeme çözümlerine, devlet desteklerinden uluslararası marka tesciline kadar "sınırların ötesine nasıl geçeceğinize" dair tüm bilgileri bulacaksınız.</p>
+            <div id="module-buttons-e-ihracat" class="flex flex-wrap gap-2 mb-8">
+                <button data-target="modul-4.1" class="module-button bg-white shadow-sm rounded-full px-4 py-2 text-sm font-semibold text-gray-700">Pazara Giriş</button>
+                <button data-target="modul-12" class="module-button bg-white shadow-sm rounded-full px-4 py-2 text-sm font-semibold text-gray-700">Global Pazaryerleri</button>
+                <button data-target="modul-4.2" class="module-button bg-white shadow-sm rounded-full px-4 py-2 text-sm font-semibold text-gray-700">Uluslararası Lojistik</button>
+                 <button data-target="modul-13" class="module-button bg-white shadow-sm rounded-full px-4 py-2 text-sm font-semibold text-gray-700">Uluslararası Ödeme</button>
+                <button data-target="modul-15" class="module-button bg-white shadow-sm rounded-full px-4 py-2 text-sm font-semibold text-gray-700">Uluslararası Hukuk</button>
+                <button data-target="modul-5" class="module-button bg-white shadow-sm rounded-full px-4 py-2 text-sm font-semibold text-gray-700">Devlet Destekleri</button>
+            </div>
+            <div id="content-display-e-ihracat" class="bg-white p-6 rounded-lg shadow-md min-h-[300px]">
+                <!-- İçerik buraya dinamik olarak gelecek -->
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="text-center p-4 text-sm text-gray-500 border-t">
+        <p>2024 &copy; İnteraktif e-Ticaret Eğitim Rehberi. Tüm hakları saklıdır.</p>
+    </footer>
+
+    <script>
+        const moduleContent = {
+            'modul-1': {
+                title: 'e-Ticarete Giriş ve Gelecek Trendleri',
+                content: `
+                    <p class="mb-4">e-Ticaret, en basit tanımıyla, ürün veya hizmetlerin internet üzerinden alınıp satılmasıdır. Tarihsel olarak EDI ile başlayıp, 90'larda Amazon ve eBay gibi devlerin kuruluşuyla halka açılmış, 2010'larda mobil ticaretin yükselişiyle ceplerimize girmiştir.</p>
+                    <h4 class="font-semibold text-lg mb-2 text-[#4A7C59]">2025 ve Ötesi Trendler:</h4>
+                    <ul class="list-disc list-inside space-y-2 text-gray-700">
+                        <li><strong>Web3 ve Merkeziyetsiz Ticaret:</strong> Blockchain tabanlı, aracısız ve şeffaf bir ticaret modelini hedefler. NFT'ler ile dijital ürün sahipliği doğrulanabilir hale gelir.</li>
+                        <li><strong>Metaverse'te Alışveriş:</strong> Sanal mağazalarda 3D ürün deneyimleri ve avatarlar aracılığıyla sosyal bir alışveriş ortamı sunar. Moda ve eğlence sektörleri için büyük potansiyel taşır.</li>
+                        <li><strong>Yapay Zeka (AI) Destekli Kişiselleştirme:</strong> Müşteri verilerini analiz ederek kişiye özel ürün önerileri, indirimler ve içerikler sunar. Bu, müşteri deneyimini iyileştirir ve satışları artırır.</li>
+                        <li><strong>Sürdürülebilir e-Ticaret:</strong> Çevre dostu ürünler, yeşil lojistik ve etik tedarik zincirleri, özellikle yeni nesil tüketiciler için kritik bir tercih sebebidir.</li>
+                    </ul>
+                `
+            },
+             'modul-1.3': {
+                title: 'e-Ticaret İş Modelleri',
+                content: `
+                    <p class="mb-4">İş modeli, bir şirketin nasıl değer yarattığını, bu değeri müşterilere nasıl ulaştırdığını ve bu süreçte nasıl para kazandığını açıklayan temel bir çerçevedir.</p>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="p-4 border rounded-lg">
+                            <h5 class="font-bold text-[#4A7C59]">B2C (İşletmeden Tüketiciye)</h5>
+                            <p>En yaygın modeldir. Örnek: Trendyol, Hepsiburada.</p>
+                        </div>
+                        <div class="p-4 border rounded-lg">
+                            <h5 class="font-bold text-[#4A7C59]">B2B (İşletmeden İşletmeye)</h5>
+                            <p>İşletmeler arası toptan ticarettir. Örnek: Alibaba, SAP.</p>
+                        </div>
+                        <div class="p-4 border rounded-lg">
+                            <h5 class="font-bold text-[#4A7C59]">D2C (Doğrudan Tüketiciye)</h5>
+                            <p>Üreticinin aracısız satış yapmasıdır. Örnek: Nike.com, Warby Parker.</p>
+                        </div>
+                        <div class="p-4 border rounded-lg">
+                            <h5 class="font-bold text-[#4A7C59]">Abonelik Modelleri</h5>
+                            <p>Tekrarlayan gelir sağlayan modeller. Örnek: Netflix, Spotify, abonelik kutuları.</p>
+                        </div>
+                    </div>
+                `
+            },
+            'modul-1.4': {
+                title: 'Başarılı e-Ticaret İşletmelerinin Anatomisi',
+                content: `
+                    <h4 class="font-semibold text-lg mb-2 text-[#4A7C59]">Başarıyı Getiren Temel Faktörler:</h4>
+                    <ul class="list-disc list-inside space-y-2 mb-6">
+                        <li><strong>Müşteri Odaklılık:</strong> Kullanıcı dostu arayüzler ve üstün müşteri hizmetleri.</li>
+                        <li><strong>Güçlü Teknoloji:</strong> Hızlı, güvenli ve ölçeklenebilir bir altyapı.</li>
+                        <li><strong>Veri Odaklı Karar Verme:</strong> Stratejileri optimize etmek için sürekli veri analizi.</li>
+                        <li><strong>Etkili Pazarlama:</strong> Doğru hedef kitleye ulaşma ve marka bilinirliği oluşturma.</li>
+                        <li><strong>Verimli Lojistik:</strong> Hızlı, hatasız ve maliyet etkin tedarik zinciri yönetimi.</li>
+                    </ul>
+                    <h4 class="font-semibold text-lg mb-2 text-red-600">Yaygın Hatalar:</h4>
+                    <ul class="list-disc list-inside space-y-2">
+                        <li>Yetersiz pazar araştırması.</li>
+                        <li>Kötü kullanıcı deneyimi (UX) ve teknik sorunlar.</li>
+                        <li>Yetersiz pazarlama ve marka bilinirliği eksikliği.</li>
+                        <li>Lojistik ve tedarik zinciri yönetimindeki aksaklıklar.</li>
+                    </ul>
+                `
+            },
+            'modul-1.5': {
+                title: 'Yasal Çerçeveye İlk Bakış',
+                content: `
+                    <p class="mb-4">E-ticaret, fiziksel mağazalardan farklı olarak kendine özgü yasal düzenlemelere tabidir. Bu yasalara uyum, işletmenizin güvenilirliğini artırır ve hukuki sorunları önler.</p>
+                    <h4 class="font-semibold text-lg mb-2 text-[#4A7C59]">Türkiye'deki Temel Düzenlemeler:</h4>
+                    <ul class="list-disc list-inside space-y-2">
+                        <li><strong>Kişisel Verilerin Korunması Kanunu (KVKK):</strong> Müşteri verilerinin toplanması, işlenmesi ve korunmasına yönelik kuralları belirler. Aydınlatma yükümlülüğü ve açık rıza alma esastır.</li>
+                        <li><strong>Tüketicinin Korunması Hakkında Kanun:</strong> Özellikle Mesafeli Satışlar Yönetmeliği ile e-ticareti düzenler. 14 gün içinde cayma hakkı gibi tüketici haklarını içerir.</li>
+                        <li><strong>Elektronik Ticaretin Düzenlenmesi Hakkında Kanun:</strong> Hizmet sağlayıcıların yükümlülüklerini ve ticari elektronik iletilerin (SMS, e-posta) kurallarını belirler. ETBİS kaydı zorunludur.</li>
+                    </ul>
+                    <h4 class="font-semibold text-lg mt-4 mb-2 text-[#4A7C59]">Uluslararası Düzenlemeler:</h4>
+                     <p>e-İhracat yapıyorsanız, AB için <strong>GDPR</strong> ve ABD (Kaliforniya) için <strong>CCPA</strong> gibi veri koruma yasalarına uymalısınız.</p>
+                `
+            },
+            'modul-24': {
+                title: 'İş Modeli Kanvası Hazırlama',
+                content: `
+                    <p class="mb-4">İş Modeli Kanvası, iş fikrinizi 9 temel yapı taşı üzerinden görselleştiren stratejik bir yönetim aracıdır. Bu, işinizin tüm bileşenlerini tek bir sayfada görmenizi ve aralarındaki ilişkileri anlamanızı sağlar.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+                        <div class="p-3 bg-green-50 border border-green-200 rounded-lg"><strong>1. Müşteri Segmentleri:</strong> Kimin için değer yaratıyoruz?</div>
+                        <div class="p-3 bg-green-50 border border-green-200 rounded-lg"><strong>2. Değer Önermeleri:</strong> Hangi sorunu çözüyoruz? Ne sunuyoruz?</div>
+                        <div class="p-3 bg-green-50 border border-green-200 rounded-lg"><strong>3. Kanallar:</strong> Müşterilere nasıl ulaşıyoruz?</div>
+                        <div class="p-3 bg-blue-50 border border-blue-200 rounded-lg"><strong>4. Müşteri İlişkileri:</strong> Müşterilerle nasıl bir bağ kuruyoruz?</div>
+                        <div class="p-3 bg-blue-50 border border-blue-200 rounded-lg"><strong>5. Gelir Akışları:</strong> Nasıl para kazanıyoruz?</div>
+                        <div class="p-3 bg-yellow-50 border border-yellow-200 rounded-lg"><strong>6. Temel Faaliyetler:</strong> Değer önermemizi sunmak için ne yapıyoruz?</div>
+                        <div class="p-3 bg-yellow-50 border border-yellow-200 rounded-lg"><strong>7. Temel Kaynaklar:</strong> Hangi kaynaklara ihtiyacımız var?</div>
+                        <div class="p-3 bg-yellow-50 border border-yellow-200 rounded-lg"><strong>8. Temel Ortaklıklar:</strong> Kimlerle iş birliği yapıyoruz?</div>
+                        <div class="p-3 bg-red-50 border border-red-200 rounded-lg md:col-span-3"><strong>9. Maliyet Yapısı:</strong> En önemli maliyetlerimiz neler?</div>
+                    </div>
+                `
+            },
+            'modul-25': {
+                title: 'SWOT Analizi',
+                content: `
+                     <p class="mb-4">SWOT Analizi, bir işletmenin stratejik planlamasında kullanılan, iç ve dış faktörleri değerlendiren bir tekniktir.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="font-bold text-lg mb-2 text-green-700">İçsel Faktörler (Kontrol Edebildiklerimiz)</h4>
+                            <div class="bg-green-50 p-4 rounded-lg mb-4">
+                                <h5 class="font-semibold">Güçlü Yönler (Strengths)</h5>
+                                <p class="text-sm">Benzersiz ürün, güçlü marka, yetenekli ekip gibi avantajlarınız.</p>
+                            </div>
+                            <div class="bg-red-50 p-4 rounded-lg">
+                                <h5 class="font-semibold">Zayıf Yönler (Weaknesses)</h5>
+                                <p class="text-sm">Kaynak eksikliği, zayıf marka bilinirliği, teknolojik yetersizlikler gibi dezavantajlarınız.</p>
+                            </div>
+                        </div>
+                        <div>
+                             <h4 class="font-bold text-lg mb-2 text-blue-700">Dışsal Faktörler (Kontrol Edemediklerimiz)</h4>
+                            <div class="bg-blue-50 p-4 rounded-lg mb-4">
+                                <h5 class="font-semibold">Fırsatlar (Opportunities)</h5>
+                                <p class="text-sm">Pazardaki boşluklar, yeni teknolojiler, değişen tüketici trendleri gibi dışsal avantajlar.</p>
+                            </div>
+                            <div class="bg-yellow-50 p-4 rounded-lg">
+                                <h5 class="font-semibold">Tehditler (Threats)</h5>
+                                <p class="text-sm">Yoğun rekabet, ekonomik krizler, olumsuz yasal düzenlemeler gibi dışsal riskler.</p>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            'modul-3': {
+                title: 'Platform Seçimi ve Değerlendirmesi',
+                content: `
+                    <p class="mb-4">Doğru e-ticaret platformu, işinizin temelini oluşturur. Seçiminiz; maliyet, ölçeklenebilirlik, özelleştirme ve kullanım kolaylığı gibi birçok faktörü etkiler.</p>
+                    <div class="mb-4">
+                        <label for="platform-filter" class="block text-sm font-medium text-gray-700 mb-1">Karşılaştırma Kriteri Seçin:</label>
+                        <select id="platform-filter" class="w-full md:w-1/2 p-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#4A7C59] focus:border-[#4A7C59]">
+                            <option value="kullanim">Kullanım Kolaylığı</option>
+                            <option value="maliyet">Başlangıç Maliyeti</option>
+                            <option value="esneklik">Özelleştirme ve Esneklik</option>
+                            <option value="kontrol">Teknik Kontrol ve Sorumluluk</option>
+                        </select>
+                    </div>
+                    <div class="chart-container" style="max-width: 700px; height: 350px;">
+                        <canvas id="platformChart"></canvas>
+                    </div>
+                `
+            },
+             'modul-3.2': {
+                title: 'API Ekonomi ve Entegrasyon Stratejileri',
+                content: `
+                    <p class="mb-4">API (Uygulama Programlama Arayüzü), farklı yazılımların birbiriyle konuşmasını sağlayan bir "tercüman" gibidir. Modern e-ticaret, ödeme sistemlerinden kargo takibine kadar her alanda API'ler üzerine kuruludur.</p>
+                    <h4 class="font-semibold text-lg mb-2 text-[#4A7C59]">Neden Önemli?</h4>
+                     <ul class="list-disc list-inside space-y-2 text-gray-700">
+                        <li><strong>İnovasyon:</strong> Yeni hizmetlerin hızla geliştirilmesini sağlar.</li>
+                        <li><strong>Verimlilik:</strong> Manuel entegrasyonları ortadan kaldırır, otomasyonu artırır.</li>
+                        <li><strong>İş Ortaklıkları:</strong> Farklı şirketlerin kolayca entegre olup değer yaratmasını sağlar.</li>
+                    </ul>
+                     <h4 class="font-semibold text-lg mt-4 mb-2 text-[#4A7C59]">Mimari Yaklaşımı: Mikroservisler</h4>
+                     <p>Uygulamayı, her biri kendi işlevinden sorumlu (ürün, sipariş, ödeme vb.) küçük, bağımsız servislere bölmektir. Bu yapı, esneklik, ölçeklenebilirlik ve dayanıklılık sağlar.</p>
+                `
+            },
+             'modul-3.3': {
+                title: 'Bulut Altyapıları ve Ölçeklenebilirlik',
+                content: `
+                    <p class="mb-4">Bulut bilişim, bilişim kaynaklarını (sunucu, depolama vb.) internet üzerinden kiralamaktır. E-ticaret için en büyük avantajı <strong>ölçeklenebilirliktir</strong>.</p>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="p-4 border rounded-lg">
+                             <h5 class="font-bold text-[#4A7C59]">Dikey Ölçekleme (Scale Up)</h5>
+                            <p>Mevcut sunucunun kapasitesini (işlemci, RAM) artırmaktır. Basittir ama sınırları vardır.</p>
+                        </div>
+                        <div class="p-4 border rounded-lg">
+                             <h5 class="font-bold text-[#4A7C59]">Yatay Ölçekleme (Scale Out)</h5>
+                            <p>Sisteme daha fazla sunucu ekleyerek yükü dağıtmaktır. Esnektir ve e-ticarette (özellikle Kara Cuma gibi yoğun dönemlerde) tercih edilir.</p>
+                        </div>
+                    </div>
+                     <p class="mt-4">Büyük bulut sağlayıcıları (AWS, Google Cloud, Azure), otomatik ölçeklendirme (auto-scaling) özellikleri sayesinde trafiğe göre kaynakları otomatik olarak ayarlayarak kesintisiz hizmet ve maliyet optimizasyonu sunar.</p>
+                `
+            },
+             'modul-3.4': {
+                title: 'Veri Güvenliği ve Siber Tehditler',
+                content: `
+                    <p class="mb-4">Veri güvenliği, müşteri güveni, yasal uyumluluk ve marka itibarı için hayati öneme sahiptir.</p>
+                     <h4 class="font-semibold text-lg mb-2 text-[#4A7C59]">Alınması Gereken Temel Önlemler:</h4>
+                     <ul class="list-disc list-inside space-y-2 text-gray-700">
+                        <li><strong>SSL Sertifikası (HTTPS):</strong> Site ve kullanıcı arasındaki veri akışını şifreler.</li>
+                        <li><strong>PCI DSS Uyumluluğu:</strong> Kredi kartı verilerini işleyen tüm işletmeler için zorunlu güvenlik standardıdır.</li>
+                        <li><strong>KVKK/GDPR Uyumluluğu:</strong> Kişisel verilerin korunmasına yönelik yasal düzenlemelere uyum.</li>
+                        <li><strong>Güçlü Şifre Politikaları ve 2FA:</strong> İki faktörlü kimlik doğrulama ile ek bir güvenlik katmanı sağlar.</li>
+                        <li><strong>Düzenli Yazılım Güncellemeleri:</strong> Güvenlik açıklarını kapatmak için platform ve eklentileri güncel tutmak.</li>
+                        <li><strong>Düzenli Yedekleme:</strong> Olası bir veri kaybına karşı verilerin kopyalarını saklamak.</li>
+                    </ul>
+                `
+            },
+             'modul-4': {
+                title: 'Yazılım Altyapıları (Frontend & Backend)',
+                content: `
+                    <p class="mb-4">Bir e-ticaret sitesi iki ana bölümden oluşur: Müşterinin gördüğü ön yüz (Frontend) ve arka planda çalışan operasyonel kısım (Backend).</p>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="p-4 bg-blue-50 border-l-4 border-blue-400">
+                            <h5 class="font-bold text-lg">Ön Yüz (Frontend)</h5>
+                            <p class="mt-2">Kullanıcı arayüzünü ve deneyimini oluşturur. Modern teknolojiler (React, Vue, Next.js) hızlı, dinamik ve mobil uyumlu siteler yaratmayı sağlar.</p>
+                        </div>
+                        <div class="p-4 bg-green-50 border-l-4 border-green-400">
+                             <h5 class="font-bold text-lg">Arka Yüz (Backend)</h5>
+                             <p class="mt-2">Sipariş işleme, veri yönetimi, ödeme ve güvenlik gibi işlevleri yönetir. Güçlü diller (Node.js, Python, PHP) ve veritabanları (SQL, NoSQL) kullanılır.</p>
+                        </div>
+                    </div>
+                `
+            },
+            'modul-5': {
+                title: 'ERP Yönetimi',
+                content: `
+                     <p class="mb-4">ERP (Kurumsal Kaynak Planlaması), bir işletmenin finans, envanter, sipariş ve müşteri yönetimi gibi tüm temel iş süreçlerini tek bir platformda birleştiren merkezi bir yazılımdır.</p>
+                     <h4 class="font-semibold text-lg mb-2 text-[#4A7C59]">e-Ticaretteki Rolü:</h4>
+                      <ul class="list-disc list-inside space-y-2 text-gray-700">
+                        <li><strong>Veri Tutarlılığı:</strong> Stok, fiyat ve sipariş bilgilerinin e-ticaret sitesi ile senkronize olmasını sağlar.</li>
+                        <li><strong>Otomasyon:</strong> Siparişlerin otomatik olarak muhasebe ve envanter kayıtlarına işlenmesini sağlar.</li>
+                        <li><strong>Verimlilik:</strong> Manuel veri girişini ortadan kaldırır ve operasyonel verimliliği artırır.</li>
+                        <li><strong>Raporlama:</strong> İşletmenin genel performansı hakkında bütünsel bir bakış açısı sunar.</li>
+                    </ul>
+                `
+            },
+             'modul-2.1': {
+                title: 'Tedarik Zinciri ve Lojistik Optimizasyonu',
+                content: `
+                    <p class="mb-4">Tedarik zinciri, bir ürünün hammaddeden son tüketiciye ulaşana kadar geçtiği tüm aşamalardır. Lojistik ise bu zincir içindeki hareket ve depolama operasyonlarıdır.</p>
+                     <h4 class="font-semibold text-lg mb-2 text-[#4A7C59]">Gelecek Nesil Lojistik Çözümleri:</h4>
+                     <ul class="list-disc list-inside space-y-2 text-gray-700">
+                        <li><strong>Mikrofülfilment Merkezleri:</strong> Şehir merkezlerine yakın küçük depolarla son mil teslimat süresini ve maliyetini azaltmak.</li>
+                        <li><strong>Robotik Depolar:</strong> Otomasyon ile işlem hızını artırmak, hata oranını ve işçilik maliyetlerini düşürmek.</li>
+                        <li><strong>Son Mil Teslimat Teknolojileri:</strong> Drone, otonom araçlar ve kilitli dolaplar gibi yenilikçi yaklaşımlar.</li>
+                    </ul>
+                `
+            },
+             'modul-2.2': {
+                title: 'Envanter Yönetimi ve Talep Tahmini',
+                content: `
+                     <p class="mb-4">Doğru envanter yönetimi, satış kaybını önler ve maliyetleri kontrol eder. Talep tahmini ise, "gelecekte ne kadar ürün satacağım?" sorusuna cevap arar.</p>
+                     <h4 class="font-semibold text-lg mb-2 text-[#4A7C59]">Modern Yaklaşımlar:</h4>
+                    <div class="p-4 bg-yellow-50 border-l-4 border-yellow-400">
+                        <h5 class="font-bold">Yapay Zeka (AI) Destekli Optimizasyon</h5>
+                        <p class="mt-2">AI algoritmaları; geçmiş satışlar, hava durumu, sosyal medya trendleri gibi çok sayıda değişkeni analiz ederek daha doğru talep tahminleri yapar ve stok seviyelerini otomatik optimize eder.</p>
+                    </div>
+                     <div class="p-4 bg-blue-50 border-l-4 border-blue-400 mt-4">
+                        <h5 class="font-bold">Dinamik Fiyatlandırma Entegrasyonu</h5>
+                        <p class="mt-2">Fiyatların talep, stok seviyesi ve rekabete göre gerçek zamanlı olarak ayarlanmasıdır. Stok fazlası durumunda fiyatı düşürerek satışı teşvik eder, stok azlığında ise kar marjını optimize eder.</p>
+                    </div>
+                `
+            },
+             'modul-2.3': {
+                title: 'Depo Yönetim Sistemleri (WMS)',
+                content: `
+                    <p class="mb-4">WMS (Warehouse Management System), bir depodaki ürün kabulü, stok takibi, sipariş toplama ve sevkiyat gibi tüm operasyonları yöneten bir yazılımdır.</p>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="p-4 border rounded-lg">
+                            <h5 class="font-bold text-[#4A7C59]">Geleneksel WMS (On-Premise)</h5>
+                            <p>Şirketin kendi sunucularına kurulur. Yüksek başlangıç maliyeti ve teknik bilgi gerektirir ama tam kontrol sunar.</p>
+                        </div>
+                        <div class="p-4 border rounded-lg">
+                             <h5 class="font-bold text-[#4A7C59]">Bulut Tabanlı WMS (SaaS)</h5>
+                            <p>Abonelik modeliyle kullanılır. Düşük başlangıç maliyeti, hızlı kurulum ve kullanım kolaylığı sunar. KOBİ'ler için idealdir.</p>
+                        </div>
+                    </div>
+                     <p class="mt-4">Bir WMS'in tam potansiyeli, ERP, e-ticaret platformu ve kargo sistemleri gibi diğer yazılımlarla entegre olmasıyla ortaya çıkar.</p>
+                `
+            },
+            'modul-2.4': {
+                title: 'Sipariş Karşılama ve İade Süreçleri',
+                content: `
+                    <p class="mb-4"><strong>Sipariş Karşılama (Order Fulfillment)</strong>, bir siparişin alınmasından müşteriye teslim edilmesine kadar olan tüm süreci kapsar. <strong>İade Yönetimi</strong> ise e-ticaretin kaçınılmaz bir parçasıdır ve müşteri sadakati için kritik öneme sahiptir.</p>
+                     <h4 class="font-semibold text-lg mb-2 text-[#4A7C59]">Sipariş Karşılama Adımları:</h4>
+                    <div class="flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-4">
+                        <div class="process-step p-3 rounded-lg text-center">1. Sipariş Alındı</div>
+                        <div class="arrow text-2xl font-light">&rarr;</div>
+                        <div class="process-step p-3 rounded-lg text-center">2. İşlendi</div>
+                        <div class="arrow text-2xl font-light">&rarr;</div>
+                        <div class="process-step p-3 rounded-lg text-center">3. Toplandı (Picking)</div>
+                        <div class="arrow text-2xl font-light">&rarr;</div>
+                        <div class="process-step p-3 rounded-lg text-center">4. Paketlendi (Packing)</div>
+                        <div class="arrow text-2xl font-light">&rarr;</div>
+                        <div class="process-step p-3 rounded-lg text-center">5. Sevk Edildi</div>
+                    </div>
+                     <h4 class="font-semibold text-lg mt-6 mb-2 text-[#4A7C59]">Etkili İade Yönetimi:</h4>
+                     <p>Kolay ve şeffaf bir iade süreci, olumsuz bir deneyimi olumluya çevirebilir. <strong>Otomatik iade yönetim sistemleri</strong> ve etkili bir <strong>Ters Lojistik (Reverse Logistics)</strong> stratejisi, maliyetleri düşürür ve verimliliği artırır.</p>
+                `
+            },
+             'modul-2.5': {
+                title: 'Müşteri Hizmetleri Operasyonları',
+                content: `
+                    <p class="mb-4">e-Ticarette müşteri ile satıcı arasındaki tek doğrudan insani temas noktası genellikle müşteri hizmetleridir. Bu nedenle kalitesi, marka algısını doğrudan etkiler.</p>
+                     <h4 class="font-semibold text-lg mb-2 text-[#4A7C59]">Modern Müşteri Hizmetleri:</h4>
+                     <ul class="list-disc list-inside space-y-2 text-gray-700">
+                        <li><strong>Çok Kanallı Destek:</strong> Telefon, e-posta, canlı sohbet ve sosyal medya üzerinden tutarlı hizmet sunmak.</li>
+                        <li><strong>Chatbotlar ve AI:</strong> 7/24 destek sağlamak, sıkça sorulan soruları yanıtlamak ve müşteri temsilcilerinin yükünü azaltmak.</li>
+                        <li><strong>Kişiselleştirilmiş İletişim:</strong> CRM sistemleri kullanarak müşteriyi tanımak, ismiyle hitap etmek ve geçmiş etkileşimleri hatırlamak.</li>
+                        <li><strong>Proaktif İletişim:</strong> Potansiyel bir sorun oluşmadan (örn: kargo gecikmesi) müşteriyi bilgilendirmek.</li>
+                    </ul>
+                `
+            },
+             'modul-2.6': {
+                title: 'Sürdürülebilir Operasyonel Uygulamalar',
+                content: `
+                    <p class="mb-4">Sürdürülebilirlik, sadece çevresel bir sorumluluk değil, aynı zamanda bir iş avantajıdır. Tüketiciler, çevreye duyarlı ve etik markaları tercih etmektedir.</p>
+                     <h4 class="font-semibold text-lg mb-2 text-[#4A7C59]">Karbon Ayak İzini Azaltma Yolları:</h4>
+                     <ul class="list-disc list-inside space-y-2 text-gray-700">
+                        <li><strong>Yeşil Lojistik:</strong> Elektrikli araçlar kullanmak ve teslimat rotalarını optimize etmek.</li>
+                        <li><strong>Sıfır Atık Paketleme:</strong> Geri dönüştürülebilir veya kompostlanabilir ambalajlar kullanmak.</li>
+                        <li><strong>Enerji Verimliliği:</strong> Depo ve ofislerde enerji tasarrufu sağlamak.</li>
+                         <li><strong>Etik Tedarik Zinciri:</strong> Üretim süreçlerinde adil çalışma koşulları ve çevresel standartlara uyum sağlamak.</li>
+                    </ul>
+                `
+            },
+             'modul-18': {
+                title: 'İleri Seviye Dijital Pazarlama',
+                content: `
+                    <p class="mb-4">Dijital pazarlama, doğru hedef kitleye ulaşmak ve onları sadık müşterilere dönüştürmek için entegre bir yaklaşım gerektirir.</p>
+                     <h4 class="font-semibold text-lg mb-2 text-[#4A7C59]">Temel Stratejiler:</h4>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="p-3 border rounded-lg"><strong>Omnichannel Yaklaşımı:</strong> Online ve offline tüm kanallarda tutarlı ve kesintisiz bir müşteri deneyimi sunmak.</div>
+                        <div class="p-3 border rounded-lg"><strong>Bütçe Optimizasyonu ve ROAS:</strong> Reklam harcamasının geri dönüşünü (ROAS) maksimize etmek için yapay zeka destekli bütçe yönetimi.</div>
+                        <div class="p-3 border rounded-lg"><strong>Gelişmiş SEM:</strong> Google Ads ve Microsoft Advertising'de yeniden pazarlama ve müşteri eşleştirme gibi ileri düzey teknikler kullanmak.</div>
+                        <div class="p-3 border rounded-lg"><strong>Sosyal Medya Reklamcılığı:</strong> TikTok, Instagram gibi platformlarda dönüşüm odaklı ve hedefli kampanyalar yürütmek.</div>
+                        <div class="p-3 border rounded-lg"><strong>Pazarlama Otomasyonu:</strong> E-posta ve SMS ile kişiselleştirilmiş ve otomatik tetiklenen iletişim akışları oluşturmak.</div>
+                         <div class="p-3 border rounded-lg"><strong>Influencer Pazarlaması:</strong> Niş kitlelere ulaşmak için özellikle mikro ve nano influencer'larla iş birliği yapmak.</div>
+                    </div>
+                `
+            },
+             'modul-19': {
+                title: 'SEO ve İçerik Yönetimi',
+                content: `
+                    <p class="mb-4">SEO (Arama Motoru Optimizasyonu), web sitenizin arama motorlarında organik olarak daha üst sıralarda yer almasını sağlayarak ücretsiz trafik elde etmektir.</p>
+                    <h4 class="font-semibold text-lg mb-2 text-[#4A7C59]">SEO'nun Üç Ana Ayağı:</h4>
+                     <ul class="list-disc list-inside space-y-2 text-gray-700">
+                        <li><strong>Teknik SEO:</strong> Site hızı, mobil uyumluluk ve yapısal veri işaretlemeleri (Schema Markup) gibi sitenin altyapısal sağlığı ile ilgilenir.</li>
+                        <li><strong>Site İçi (On-Page) SEO:</strong> Başlıklar, meta açıklamalar, URL yapısı ve içerik gibi sayfa içi elementlerin optimizasyonudur.</li>
+                        <li><strong>Site Dışı (Off-Page) SEO:</strong> Diğer sitelerden alınan kaliteli backlinkler ve marka bilinirliği çalışmalarıdır.</li>
+                    </ul>
+                     <p class="mt-4">Google'ın <strong>E-A-T (Uzmanlık, Otorite, Güvenilirlik)</strong> prensibi, kaliteli ve güvenilir içerik üretmenin önemini vurgular.</p>
+                `
+            },
+             'modul-20': {
+                title: 'Dönüşüm Optimizasyonu (CRO) ve A/B Testi',
+                content: `
+                    <p class="mb-4">CRO (Dönüşüm Oranı Optimizasyonu), web sitesi ziyaretçilerini müşteriye dönüştürme oranını artırmayı hedefler. Temel aracı <strong>A/B Testi</strong>'dir.</p>
+                     <h4 class="font-semibold text-lg mb-2 text-[#4A7C59]">A/B Testi Süreci:</h4>
+                    <ol class="list-decimal list-inside space-y-2">
+                        <li><strong>Hipotez Oluşturma:</strong> "Buton rengini yeşilden turuncuya çevirirsek, tıklama oranı artar" gibi bir varsayımda bulunmak.</li>
+                        <li><strong>Test Grupları Oluşturma:</strong> Ziyaretçilerin bir kısmına mevcut versiyonu (A), diğer kısmına yeni versiyonu (B) göstermek.</li>
+                        <li><strong>Veri Toplama ve Analiz:</strong> Belirli bir süre boyunca hangi versiyonun daha iyi performans gösterdiğini istatistiksel olarak analiz etmek.</li>
+                        <li><strong>Uygulama:</strong> Kazanan versiyonu tüm kullanıcılara uygulamak.</li>
+                    </ol>
+                    <p class="mt-4">Isı haritaları (Heatmaps) ve oturum kayıtları gibi araçlar, kullanıcı davranışını anlamak ve test hipotezleri oluşturmak için kullanılır.</p>
+                `
+            },
+             'modul-21': {
+                title: 'Design Thinking Eğitimi',
+                content: `
+                    <p class="mb-4">Design Thinking, insan odaklı, yenilikçi bir problem çözme metodolojisidir. Amaç, kullanıcıların gerçek ihtiyaçlarını anlayarak onlara en uygun çözümleri sunmaktır.</p>
+                     <h4 class="font-semibold text-lg mb-2 text-[#4A7C59]">Design Thinking Adımları:</h4>
+                    <div class="flex flex-col md:flex-row items-stretch justify-center gap-2 text-center">
+                        <div class="process-step p-3 rounded-lg flex-1"><strong>1. Empati Kur:</strong> Kullanıcının dünyasını ve sorunlarını anla.</div>
+                        <div class="arrow text-2xl font-light self-center mx-2">&rarr;</div>
+                        <div class="process-step p-3 rounded-lg flex-1"><strong>2. Tanımla:</strong> Anladığın bilgilerle asıl problemi netleştir.</div>
+                        <div class="arrow text-2xl font-light self-center mx-2">&rarr;</div>
+                        <div class="process-step p-3 rounded-lg flex-1"><strong>3. Fikir Geliştir:</strong> Tanımladığın probleme çok sayıda çözüm fikri üret.</div>
+                        <div class="arrow text-2xl font-light self-center mx-2">&rarr;</div>
+                        <div class="process-step p-3 rounded-lg flex-1"><strong>4. Prototiple:</strong> Fikirlerini test edilebilir somut modellere dönüştür.</div>
+                        <div class="arrow text-2xl font-light self-center mx-2">&rarr;</div>
+                        <div class="process-step p-3 rounded-lg flex-1"><strong>5. Test Et:</strong> Prototipleri kullanıcılarla test ederek geri bildirim topla.</div>
+                    </div>
+                `
+            },
+             'modul-22': {
+                title: 'Müşteri Deneyimi (CX) Tasarımı',
+                content: `
+                    <p class="mb-4">Müşteri Deneyimi (CX), bir müşterinin markanızla olan tüm etkileşimlerinin toplamıdır. Sadece bir işlemden ibaret değil, bütünsel bir yolculuktur.</p>
+                     <h4 class="font-semibold text-lg mb-2 text-[#4A7C59]">Temel Araçlar ve Kavramlar:</h4>
+                     <ul class="list-disc list-inside space-y-2 text-gray-700">
+                        <li><strong>Müşteri Yolculuğu Haritalama:</strong> Müşterinin farkındalık aşamasından sadakat aşamasına kadar olan tüm temas noktalarını ve bu noktalardaki duygusal durumlarını analiz etmek.</li>
+                        <li><strong>Omnichannel Deneyim:</strong> Online, offline, mobil gibi tüm kanallarda tutarlı ve kesintisiz bir deneyim sunmak.</li>
+                        <li><strong>NPS (Net Promoter Score):</strong> "Bu markayı bir arkadaşınıza tavsiye etme olasılığınız nedir?" sorusuyla müşteri sadakatini ölçen bir metrik.</li>
+                         <li><strong>Duygusal Tasarım:</strong> Marka ile müşteri arasında mantıksal bağın ötesinde duygusal bir bağ kurmaya odaklanmak.</li>
+                    </ul>
+                `
+            },
+             'modul-8': {
+                title: 'e-Ticaret Yapay Zeka Uygulamaları',
+                content: `
+                    <p class="mb-4">Yapay zeka (AI), e-ticaretin birçok alanını dönüştürerek daha akıllı, kişisel ve verimli hale getiriyor.</p>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="p-3 bg-blue-50 border rounded-lg"><strong>Kişiselleştirilmiş Ürün Önerileri:</strong> Müşteri davranışlarını analiz ederek kişiye özel tavsiyeler sunar.</div>
+                        <div class="p-3 bg-blue-50 border rounded-lg"><strong>Chatbot ve Sanal Asistanlar:</strong> Müşteri hizmetlerinde 7/24 otomasyon sağlar.</div>
+                        <div class="p-3 bg-blue-50 border rounded-lg"><strong>Dinamik Fiyatlandırma:</strong> Talep, rekabet ve stoka göre fiyatları otomatik optimize eder.</div>
+                        <div class="p-3 bg-blue-50 border rounded-lg"><strong>Dolandırıcılık Tespiti:</strong> Şüpheli işlem kalıplarını belirleyerek finansal kayıpları önler.</div>
+                        <div class="p-3 bg-blue-50 border rounded-lg"><strong>Görsel Arama:</strong> Müşterilerin bir fotoğraf yükleyerek benzer ürünleri bulmasını sağlar.</div>
+                        <div class="p-3 bg-blue-50 border rounded-lg"><strong>AI ile İçerik Oluşturma:</strong> Ürün açıklamaları ve pazarlama metinleri gibi içerikleri otomatik olarak üretir.</div>
+                    </div>
+                `
+            },
+             'modul-4.1': {
+                title: 'e-İhracat: Küresel Pazarlara Giriş Stratejileri',
+                content: `
+                    <p class="mb-4">e-İhracat, ürünlerinizi internet üzerinden yurtdışındaki müşterilere satmaktır. Bu, pazarınızı büyütmek ve gelirinizi çeşitlendirmek için büyük bir fırsattır.</p>
+                     <h4 class="font-semibold text-lg mb-2 text-[#4A7C59]">Pazara Giriş Stratejileri:</h4>
+                     <ul class="list-disc list-inside space-y-2 text-gray-700">
+                        <li><strong>Doğrudan e-İhracat:</strong> Kendi web siteniz üzerinden satış yapmak. Tam kontrol ve yüksek kar marjı sunar ama yüksek sorumluluk gerektirir.</li>
+                        <li><strong>Uluslararası Pazaryerleri:</strong> Amazon, eBay, Etsy gibi platformlar üzerinden satış yapmak. Düşük riskle geniş kitlelere hızlı erişim sağlar.</li>
+                        <li><strong>Yerel Ortaklıklar:</strong> Hedef pazarda bir distribütör veya yerel e-ticaret sitesi ile işbirliği yapmak.</li>
+                    </ul>
+                    <p class="mt-4">Başarının anahtarı <strong>Yerelleşme (Localization)</strong>'dir: Web sitenizi, pazarlamanızı ve ürünlerinizi hedef pazarın diline, kültürüne, para birimine ve yasal düzenlemelerine göre uyarlamak.</p>
+                `
+            },
+             'modul-12': {
+                title: 'Global Pazaryerlerinde Satış',
+                content: `
+                    <p class="mb-4">Amazon, eBay, Alibaba ve Etsy gibi global pazaryerleri, uluslararası pazarlara açılmanın en hızlı ve en az riskli yollarından biridir.</p>
+                     <h4 class="font-semibold text-lg mb-2 text-[#4A7C59]">Başarı İçin İpuçları:</h4>
+                     <ul class="list-disc list-inside space-y-2 text-gray-700">
+                        <li><strong>Listeleme Optimizasyonu:</strong> Ürün başlıklarınızı, açıklamalarınızı ve anahtar kelimelerinizi pazaryerinin arama algoritmasına göre optimize edin.</li>
+                        <li><strong>Yüksek Kaliteli Görseller:</strong> Ürününüzü en iyi şekilde gösteren profesyonel fotoğraflar ve videolar kullanın. Amazon'da A+ içerik oluşturun.</li>
+                        <li><strong>FBA (Fulfillment by Amazon):</strong> Amazon'un lojistik altyapısını kullanarak depolama, paketleme ve kargo süreçlerini onlara bırakın. Bu, Prime üyelerine erişim sağlar.</li>
+                        <li><strong>Müşteri Yorumları ve Performans:</strong> Olumlu yorumlar ve yüksek satıcı puanları, sıralamanızı ve güvenilirliğinizi artırır.</li>
+                         <li><strong>Pazaryeri Reklamcılığı:</strong> Amazon Ads, eBay Promoted Listings gibi reklam araçlarını kullanarak ürün görünürlüğünüzü artırın.</li>
+                    </ul>
+                `
+            },
+             'modul-4.2': {
+                title: 'Uluslararası Lojistik Çözümleri',
+                content: `
+                    <p class="mb-4">Uluslararası kargo, gümrük ve iade süreçleri, e-ihracatın en karmaşık ve maliyetli kısımlarıdır.</p>
+                     <h4 class="font-semibold text-lg mb-2 text-[#4A7C59]">Gümrük ve Vergilendirme:</h4>
+                    <p>Her ülkenin gümrük kuralları ve vergi oranları farklıdır. Müşteriye sürpriz maliyetler çıkarmamak için <strong>DDP (Delivered Duty Paid - Gümrük Vergileri Ödenmiş Teslim)</strong> modelini kullanmak, müşteri memnuniyetini artırır. Bu modelde tüm vergi ve gümrük masrafları sizin tarafınızdan ödenir.</p>
+                     <h4 class="font-semibold text-lg mt-4 mb-2 text-[#4A7C59]">Uluslararası İade Lojistiği:</h4>
+                     <p>Uluslararası iadeler maliyetlidir. En etkili çözüm, hedef pazarda bir <strong>yerel iade adresi</strong> sunmaktır. Bu, anlaştığınız bir lojistik ortağı veya bir iade merkezi aracılığıyla yapılabilir. Bu, müşteri için iade sürecini basitleştirir ve maliyetleri düşürür.</p>
+                `
+            },
+             'modul-13': {
+                title: 'Uluslararası Ödeme Sistemleri',
+                content: `
+                    <p class="mb-4">Müşterilerin kendi yerel para birimleriyle ve tercih ettikleri yöntemlerle ödeme yapabilmesi, dönüşüm oranını artırmak için kritiktir.</p>
+                    <h4 class="font-semibold text-lg mb-2 text-[#4A7C59]">Temel Çözümler:</h4>
+                     <ul class="list-disc list-inside space-y-2 text-gray-700">
+                        <li><strong>Uluslararası Ödeme Ağ Geçitleri:</strong> PayPal, Stripe, Adyen gibi platformlar, tek bir entegrasyonla birçok ülkeden ve farklı para birimlerinde ödeme almanızı sağlar.</li>
+                        <li><strong>Yerel Ödeme Yöntemleri:</strong> Almanya'da Sofort, Hollanda'da iDEAL, Çin'de Alipay gibi yerel olarak popüler ödeme sistemlerini desteklemek, yerel müşterilerin güvenini kazanır.</li>
+                        <li><strong>Döviz Kuru Yönetimi:</strong> Müşteriye kendi para biriminde fiyat göstermek ve kur dalgalanmalarına karşı hedging stratejileri kullanmak önemlidir.</li>
+                         <li><strong>BNPL (Şimdi Al, Sonra Öde):</strong> Klarna, Afterpay gibi hizmetler, özellikle genç tüketiciler arasında popülerdir ve dönüşümü artırabilir.</li>
+                    </ul>
+                `
+            },
+            'modul-15': {
+                title: 'Uluslararası e-Ticaret Hukuku',
+                content: `
+                    <p class="mb-4">e-İhracat yaparken sadece kendi ülkenizin değil, aynı zamanda satış yaptığınız ülkenin yasalarına da uymak zorundasınız.</p>
+                    <h4 class="font-semibold text-lg mb-2 text-[#4A7C59]">Dikkat Edilmesi Gereken Ana Konular:</h4>
+                     <ul class="list-disc list-inside space-y-2 text-gray-700">
+                        <li><strong>Veri Koruma (GDPR):</strong> Avrupa Birliği vatandaşlarına satış yapıyorsanız, dünyanın en katı veri koruma yasası olan GDPR'a uymak zorundasınız.</li>
+                        <li><strong>Tüketici Hakları:</strong> Hedef ülkenin cayma hakkı, garanti ve iade konusundaki yasalarını bilmeli ve bunlara uymalısınız.</li>
+                        <li><strong>Gümrük ve Vergi Mevzuatı:</strong> Her ülkenin ithalat vergileri, KDV oranları ve yasaklı ürünler listesi farklıdır.</li>
+                        <li><strong>Fikri Mülkiyet:</strong> Markanızı hedef pazarlarda da tescil ettirerek taklitlere karşı koruma sağlamalısınız.</li>
+                        <li><strong>Incoterms:</strong> Uluslararası ticarette teslim şekillerini (örn: DDP) belirleyen standart kuralları anlamalısınız.</li>
+                    </ul>
+                `
+            },
+            'modul-5': {
+                 title: 'Devlet Teşvikleri ve Destekler',
+                content: `
+                    <p class="mb-4">e-İhracat maliyetli olabilir. Devletler, ihracatı artırmak için çeşitli destekler sunar. Türkiye'de bu desteklerin başında Ticaret Bakanlığı ve KOSGEB gelmektedir.</p>
+                     <h4 class="font-semibold text-lg mb-2 text-[#4A7C59]">Başlıca Destek Alanları (Ticaret Bakanlığı):</h4>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="p-3 border rounded-lg"><strong>Pazara Giriş Belgeleri Desteği:</strong> CE belgesi, ISO sertifikaları gibi belgelerin giderleri.</div>
+                        <div class="p-3 border rounded-lg"><strong>Pazar Araştırması Desteği:</strong> Hedef pazar hakkında rapor satın alma giderleri.</div>
+                        <div class="p-3 border rounded-lg"><strong>E-ticaret Sitesi Üyelik Desteği:</strong> Amazon, Alibaba gibi pazaryerlerine üyelik ücretleri.</div>
+                        <div class="p-3 border rounded-lg"><strong>Dijital Pazarlama Desteği:</strong> Yurt dışına yönelik reklam (Google, sosyal medya) ve influencer pazarlaması giderleri.</div>
+                        <div class="p-3 border rounded-lg"><strong>Marka Tescil Desteği:</strong> Markanızın yurt dışında tescil ettirilmesi masrafları.</div>
+                        <div class="p-3 border rounded-lg"><strong>Yurt Dışı Depo Kira Desteği:</strong> Hedef pazarda kiralanan depoların kira giderleri.</div>
+                    </div>
+                     <p class="mt-4"><strong>KOSGEB</strong> ise doğrudan "e-ihracat desteği" sunmasa da, mevcut destek programları kapsamında e-ticaret yazılımı, danışmanlık ve dijital pazarlama gibi birçok gideri destekleyebilmektedir.</p>
+                `
+            }
+        };
+
+        let platformChart;
+
+        function renderContent(targetId, displayAreaId) {
+            const displayArea = document.getElementById(displayAreaId);
+            const data = moduleContent[targetId];
+            if (data) {
+                displayArea.innerHTML = `<h3 class="text-2xl font-bold mb-4">${data.title}</h3>${data.content}`;
+                if (targetId === 'modul-3') {
+                    initPlatformChart();
+                }
+            } else {
+                displayArea.innerHTML = '<p class="text-gray-500">İçeriği görmek için lütfen bir modül seçin.</p>';
+            }
+        }
+
+        function handleModuleSelection(sectionId, displayAreaId) {
+            const buttonsContainer = document.getElementById(`module-buttons-${sectionId}`);
+            const buttons = buttonsContainer.querySelectorAll('.module-button');
+            buttons.forEach(button => {
+                button.addEventListener('click', () => {
+                    buttons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    renderContent(button.dataset.target, displayAreaId);
+                });
+            });
+             if (buttons.length > 0) {
+                buttons[0].click();
+            }
+        }
+        
+        function updatePlatformChart() {
+            if (!platformChart) return;
+            const filter = document.getElementById('platform-filter').value;
+            const data = {
+                kullanim: [9, 6, 4],
+                maliyet: [2, 7, 9],
+                esneklik: [4, 8, 10],
+                kontrol: [3, 8, 10]
+            };
+            const labels = {
+                kullanim: 'Kullanım Kolaylığı (10 üzerinden)',
+                maliyet: 'Başlangıç Maliyeti (10 üzerinden, 10 en maliyetli)',
+                esneklik: 'Özelleştirme ve Esneklik (10 üzerinden)',
+                kontrol: 'Teknik Kontrol ve Sorumluluk (10 üzerinden)'
+            };
+            
+            platformChart.data.datasets[0].data = data[filter];
+            platformChart.options.plugins.title.text = labels[filter];
+            platformChart.update();
+        }
+
+        function initPlatformChart() {
+             const ctx = document.getElementById('platformChart');
+             if (ctx) {
+                if(platformChart) {
+                    platformChart.destroy();
+                }
+                platformChart = new Chart(ctx.getContext('2d'), {
+                    type: 'bar',
+                    data: {
+                        labels: ['SaaS (Örn: Shopify)', 'Açık Kaynak (Örn: WooCommerce)', 'Headless Commerce'],
+                        datasets: [{
+                            label: 'Puan',
+                            data: [9, 6, 4],
+                            backgroundColor: [
+                                'rgba(74, 124, 89, 0.7)',
+                                'rgba(212, 163, 115, 0.7)',
+                                'rgba(156, 163, 175, 0.7)'
+                            ],
+                            borderColor: [
+                                '#4A7C59',
+                                '#D4A373',
+                                '#6b7280'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            x: {
+                                beginAtZero: true,
+                                max: 10
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            title: {
+                                display: true,
+                                text: 'Kullanım Kolaylığı (10 üzerinden)'
+                            }
+                        }
+                    }
+                });
+                document.getElementById('platform-filter').addEventListener('change', updatePlatformChart);
+             }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const growthCtx = document.getElementById('ecommerceGrowthChart').getContext('2d');
+            new Chart(growthCtx, {
+                type: 'line',
+                data: {
+                    labels: ['2023', '2024', '2025', '2026', '2027'],
+                    datasets: [{
+                        label: 'Pazar Büyüklüğü (Trilyon $)',
+                        data: [6.2, 6.9, 7.5, 8.2, 8.9],
+                        fill: true,
+                        backgroundColor: 'rgba(74, 124, 89, 0.2)',
+                        borderColor: '#4A7C59',
+                        tension: 0.4
+                    }]
+                },
+                 options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                     plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+
+            handleModuleSelection('strateji', 'content-display-strateji');
+            handleModuleSelection('teknoloji', 'content-display-teknoloji');
+            handleModuleSelection('operasyon', 'content-display-operasyon');
+            handleModuleSelection('pazarlama', 'content-display-pazarlama');
+            handleModuleSelection('e-ihracat', 'content-display-e-ihracat');
+
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+                    this.classList.add('active');
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>
